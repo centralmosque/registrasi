@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=yes">
+  <title>Pendaftaran Idul Fitri - Okayama Central Mosque</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== UI ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-600: #475569;
+      --gray-800: #1e293b;
+      --danger: #dc2626;
+      --warning: #f59e0b;
+      --success: #10b981;
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 28px;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+      --transition: all 0.2s ease;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-800);
+      padding-bottom: 90px;
+      line-height: 1.5;
+    }
+
+    main {
+      padding: 20px 16px 40px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+
+    .lang-btn {
+      background: white;
+      border: 1px solid var(--gray-200);
+      padding: 6px 12px;
+      border-radius: 40px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--gray-600);
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      background: white;
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      background: var(--gray-200);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--gray-600);
+      transition: var(--transition);
+    }
+
+    .step.active .step-circle {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 0 0 4px rgba(5,150,105,0.2);
+    }
+
+    .step.completed .step-circle {
+      background: var(--primary);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-600);
+    }
+
+    .step-connector {
+      flex: 0.5;
+      height: 2px;
+      background: var(--gray-200);
+      margin: 0 8px;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 24px 20px;
+      border: 1px solid var(--gray-200);
+      transition: transform 0.2s ease;
+    }
+    .card:active {
+      transform: scale(0.98);
+    }
+
+    .form-section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      border-left: 4px solid var(--primary);
+      padding-left: 12px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper i:first-child {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-300);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px 14px 13px 42px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--gray-200);
+      font-size: 15px;
+      background: white;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
+    }
+
+    input:disabled {
+      background: var(--gray-100);
+      color: var(--gray-600);
+      cursor: not-allowed;
+    }
+
+    .email-lock-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .email-lock-row .input-wrapper {
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: var(--gray-100);
+      border: 1px solid var(--gray-300);
+      border-radius: 40px;
+      padding: 0 16px;
+      height: 48px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--gray-200);
+    }
+
+    .btn-secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .otp-section {
+      margin-top: 8px;
+    }
+
+    .otp-boxes {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 12px 0;
+    }
+
+    .otp-digit {
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 600;
+      padding: 0;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--gray-300);
+    }
+
+    .otp-digit:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5,150,105,0.2);
+    }
+
+    .otp-verified .otp-digit {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 20px;
+      transition: var(--transition);
+    }
+
+    .btn-link:hover:not(:disabled) {
+      background: var(--primary-light);
+    }
+
+    .btn-link:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .gender-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .gender-group input {
+      display: none;
+    }
+
+    .gender-group label {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--gray-200);
+      background: var(--gray-50);
+      font-weight: 500;
+      cursor: pointer;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .gender-group input:checked + label {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .breakdown-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .breakdown-row .field {
+      flex: 1;
+    }
+
+    .total-summary {
+      background: var(--primary-light);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .total-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .total-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      line-height: 1;
+    }
+
+    .total-detail {
+      font-size: 12px;
+      color: var(--primary-dark);
+      font-weight: 500;
+    }
+
+    .parking-warning {
+      background: #fffbeb;
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .consent {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--primary-light);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid #d1fae5;
+      margin-bottom: 20px;
+    }
+
+    .consent input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary);
+      margin: 0;
+    }
+
+    .warning-badge {
+      background: #fffbeb;
+      border-left: 4px solid var(--warning);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .helper-text {
+      font-size: 12px;
+      color: #1f2937;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gray-100);
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+    }
+
+    .sticky-submit {
+      position: sticky;
+      bottom: 16px;
+      z-index: 20;
+      margin-top: 24px;
+      padding-top: 8px;
+      background: transparent;
+    }
+
+    .sticky-submit button {
+      width: 100%;
+      background: var(--primary);
+      border: none;
+      padding: 16px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 16px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 8px 20px rgba(5,150,105,0.25);
+    }
+
+    .sticky-submit button:active {
+      transform: scale(0.97);
+    }
+
+    .sticky-submit button:disabled {
+      background: var(--gray-300);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 60px;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s;
+    }
+
+    .loading-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .loader-icon {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--gray-300);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .error-message {
+      font-size: 12px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    @keyframes shake {
+      0%,100%{ transform: translateX(0); }
+      25%{ transform: translateX(-4px); }
+      75%{ transform: translateX(4px); }
+    }
+
+    .shake {
+      animation: shake 0.3s ease-in-out 0s 2;
+    }
+
+    @media (max-width: 560px) {
+      .breakdown-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      .otp-digit {
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+      }
+      .email-lock-row {
+        flex-wrap: wrap;
+      }
+      .email-lock-row .btn-secondary {
+        flex: 1;
+        justify-content: center;
+      }
+      .step-label {
+        font-size: 10px;
+      }
+      .step-circle {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .otp-boxes {
+        gap: 8px;
+      }
+      .otp-digit {
+        width: 48px;
+        height: 48px;
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="loadingOverlay" class="loading-overlay"><div class="loader-icon"></div></div>
+  <div id="toast" class="toast" aria-live="polite"><i class="fas fa-circle-info"></i><span id="toastMessage"></span></div>
+
+  <main>
+    <div class="container">
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="id">🇮🇩 ID</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+        <button class="lang-btn" data-lang="ja">🇯🇵 JP</button>
+      </div>
+
+      <div class="step-indicator">
+        <div class="step" data-step="1"><div class="step-circle">1</div><span class="step-label" data-i18n="stepPersonal">Identitas</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="2"><div class="step-circle">2</div><span class="step-label" data-i18n="stepDetails">Rincian</span></div>
+        <div class="step-connector"></div>
+        <div class="step" data-step="3"><div class="step-circle">3</div><span class="step-label" data-i18n="stepConfirm">Konfirmasi</span></div>
+      </div>
+
+      <div class="card">
+        <form id="registrationForm" novalidate>
+          <div class="form-section" data-section="1">
+            <div class="section-title"><i class="fas fa-user-circle"></i><span data-i18n="personalData">Data Diri</span></div>
+            <div class="field"><label for="fullName" data-i18n="fullName">Nama Lengkap</label><div class="input-wrapper"><i class="fas fa-user"></i><input type="text" name="nama_lengkap" id="fullName" autocomplete="name" data-i18n-placeholder="fullNamePlaceholder"></div><div class="error-message" id="fullNameError" style="display: none;"></div></div>
+            <div class="field"><label for="emailInput">Email</label><div class="email-lock-row"><div class="input-wrapper"><i class="fas fa-envelope"></i><input type="email" name="email" id="emailInput" autocomplete="email" data-i18n-placeholder="emailPlaceholder"></div><button type="button" id="sendOtpBtn" class="btn-secondary"><i class="fas fa-paper-plane"></i><span data-i18n="sendOtp">Kirim OTP</span></button><button type="button" id="changeEmailBtn" class="btn-secondary" style="display: none;"><i class="fas fa-pen"></i><span data-i18n="changeEmail">Ubah</span></button></div><div class="error-message" id="emailError" style="display: none;"></div></div>
+            <div id="otpSection" class="otp-section" style="display: none;"><div class="field"><label data-i18n="otpCode">Kode Verifikasi (OTP)</label><div class="otp-boxes" id="otpContainer"><input type="text" maxlength="1" class="otp-digit" data-idx="0" inputmode="numeric"><input type="text" maxlength="1" class="otp-digit" data-idx="1" inputmode="numeric"><input type="text" maxlength="1" class="otp-digit" data-idx="2" inputmode="numeric"><input type="text" maxlength="1" class="otp-digit" data-idx="3" inputmode="numeric"></div><div id="otpFeedback" class="error-message" style="display: none;"></div><div class="hint"><i class="far fa-clock"></i><span id="resendTimerText"></span><button type="button" id="resendOtpBtn" class="btn-link" disabled data-i18n="resendOtp">Kirim ulang</button></div></div></div>
+            <div class="field"><label for="phoneInput" data-i18n="phoneNumber">Nomor HP</label><div class="input-wrapper"><i class="fas fa-phone"></i><input type="tel" name="no_hp" id="phoneInput" autocomplete="tel" data-i18n-placeholder="phonePlaceholder"></div><div class="error-message" id="phoneError" style="display: none;"></div></div>
+            <div class="field"><label for="domisiliInput" data-i18n="area">Domisili</label><div class="input-wrapper"><i class="fas fa-map-marker-alt"></i><input name="domisili" list="neighborhoods" id="domisiliInput" data-i18n-placeholder="areaPlaceholder"></div><datalist id="neighborhoods"><option value="Okayama-shi, Kita-ku, Kaminakano"><option value="Okayama-shi, Kita-ku, Ima"><option value="Okayama-shi, Kita-ku, Omoto"><option value="Kurashiki-shi, Achi"><option value="Kurashiki-shi, Nakasho"><option value="Tamano-shi, Chikko"><option value="Soja-shi, Chuo"><option value="Akaiwa-shi, Sanyo"></datalist></div>
+            <div class="field"><label for="ageInput" data-i18n="age">Usia</label><div class="input-wrapper"><i class="fas fa-id-card"></i><input type="number" name="usia" id="ageInput" min="0" max="120" data-i18n-placeholder="agePlaceholder" inputmode="numeric"></div><div class="error-message" id="ageError" style="display: none;"></div></div>
+            <div class="field"><label data-i18n="gender">Jenis Kelamin</label><div class="gender-group"><input type="radio" id="genderMale" name="jk" value="Laki-laki"><label for="genderMale"><i class="fas fa-mars"></i> <span data-i18n="male">Laki-laki</span></label><input type="radio" id="genderFemale" name="jk" value="Perempuan"><label for="genderFemale"><i class="fas fa-venus"></i> <span data-i18n="female">Perempuan</span></label></div></div>
+          </div>
+
+          <div class="form-section" data-section="2">
+            <div class="section-title"><i class="fas fa-users"></i><span data-i18n="participantsTitle">Rincian Peserta</span></div>
+            <div class="breakdown-row"><div class="field"><label for="maleAdults" data-i18n="adultMale">Laki-laki Dewasa</label><div class="input-wrapper"><i class="fas fa-mars"></i><input type="number" name="male_adults" id="maleAdults" min="0" value="0" step="1" inputmode="numeric"></div></div><div class="field"><label for="femaleAdults" data-i18n="adultFemale">Perempuan Dewasa</label><div class="input-wrapper"><i class="fas fa-venus"></i><input type="number" name="female_adults" id="femaleAdults" min="0" value="0" step="1" inputmode="numeric"></div></div></div>
+            <div class="field"><label for="childrenCount" data-i18n="children">Anak-anak (&lt;15 thn)</label><div class="input-wrapper"><i class="fas fa-child"></i><input type="number" name="children_count" id="childrenCount" min="0" value="0" step="1" inputmode="numeric"></div></div>
+            <div class="total-summary"><div class="total-label"><i class="fas fa-users"></i><span data-i18n="totalParticipants">Total Peserta</span></div><div class="total-number" id="totalNumberDisplay">0</div><div class="total-detail" id="totalDetailDisplay"></div></div><input type="hidden" name="jumlah_orang" id="totalHidden">
+            <div class="field"><label for="sessionSelect" data-i18n="prayerSession">Pilih Kloter</label><div class="input-wrapper"><i class="fas fa-calendar-alt"></i><select name="sholat_session" id="sessionSelect" required><option value="" disabled selected data-i18n="selectSession">Pilih sesi</option><option value="Kloter 1 (07:00)" data-i18n="session1">Kloter 1: 07:00</option><option value="Kloter 2 (08:30)" data-i18n="session2">Kloter 2: 08:30</option></select></div></div>
+            <div class="field"><label for="transportSelect" data-i18n="transportation">Transportasi</label><div class="input-wrapper"><i class="fas fa-car"></i><select name="transportasi" id="transportSelect" required><option value="" disabled selected data-i18n="selectTransport">Pilih transportasi</option><option value="Jalan Kaki" data-i18n="walking">Jalan Kaki</option><option value="Sepeda" data-i18n="bicycle">Sepeda</option><option value="Mobil" data-i18n="car">Mobil</option><option value="Transportasi Umum" data-i18n="publicTransport">Transportasi Umum</option></select></div></div>
+            <div id="parkingWarning" class="parking-warning" style="display: none;"><i class="fas fa-car-side"></i><span data-i18n="parkingWarningMsg">⚠️ Masjid tidak memiliki lahan parkir. Silakan gunakan parkir berbayar di sekitar area masjid.</span></div>
+          </div>
+
+          <div class="form-section" data-section="3">
+            <label class="consent"><input type="checkbox" id="consentCheck" required><span data-i18n="consentText">Saya menyetujui data digunakan untuk keperluan acara ini</span></label>
+            <div id="duplicateWarning" class="warning-badge" style="display: none;"><i class="fas fa-exclamation-triangle"></i><span id="dupMsg"></span></div>
+            <div id="submitHelper" class="helper-text"><i class="fas fa-info-circle"></i><span id="submitHelperText"></span></div>
+            <div class="sticky-submit"><button type="submit" id="submitBtn" disabled><span id="submitText" data-i18n="registerNow">Daftar Sekarang</span><i class="fas fa-arrow-right"></i></button></div>
+          </div>
+        </form>
+      </div>
+      <footer>© 2026 — Masjid Central Okayama</footer>
+    </div>
+  </main>
+
+  <script>
+    /* ===== TRANSLATIONS ===== */
+    const translations = {
+      id: { stepPersonal: "Identitas", stepDetails: "Rincian", stepConfirm: "Konfirmasi", personalData: "Data Diri", fullName: "Nama Lengkap", fullNamePlaceholder: "Ahmad bin Abdullah", emailPlaceholder: "email@contoh.com", sendOtp: "Kirim OTP", changeEmail: "Ubah", otpCode: "Kode Verifikasi (OTP)", phoneNumber: "Nomor HP", phonePlaceholder: "08012345678 / 081234567890", area: "Domisili", areaPlaceholder: "Cari kelurahan / kota", age: "Usia", agePlaceholder: "25", gender: "Jenis Kelamin", male: "Laki-laki", female: "Perempuan", participantsTitle: "Rincian Peserta", adultMale: "Laki-laki Dewasa", adultFemale: "Perempuan Dewasa", children: "Anak-anak (<15 thn)", totalParticipants: "Total Peserta", prayerSession: "Pilih Kloter", selectSession: "Pilih sesi", session1: "Kloter 1: 07:00", session2: "Kloter 2: 08:30", transportation: "Transportasi", selectTransport: "Pilih transportasi", walking: "Jalan Kaki", bicycle: "Sepeda", car: "Mobil", publicTransport: "Transportasi Umum", parkingWarningMsg: "⚠️ Masjid tidak memiliki lahan parkir. Silakan gunakan parkir berbayar di sekitar area masjid.", consentText: "Saya menyetujui data digunakan untuk keperluan acara ini", registerNow: "Daftar Sekarang", resendOtp: "Kirim ulang", errorNameRequired: "Nama minimal 3 karakter", errorEmailInvalid: "Email tidak valid", errorPhoneInvalid: "Format HP: Jepang (080/090/070) atau Indonesia (08xx)", errorAgeRange: "Usia harus antara 0-120", errorConsent: "Setujui persyaratan", errorMinParticipant: "Minimal 1 peserta", errorOtpNotVerified: "Verifikasi OTP belum selesai", errorDuplicate: "Data dengan email/HP ini sudah terdaftar. Hubungi panitia.", errorSessionRequired: "Pilih sesi sholat", errorTransportRequired: "Pilih transportasi", otpVerified: "✅ Email terverifikasi", otpWrong: "❌ Kode salah, coba lagi", otpAttemptsLeft: "Sisa percobaan: {attempts}", otpMaxAttempts: "Terlalu banyak percobaan. Kirim ulang OTP.", resendTimerWait: "Kirim ulang dalam {seconds}s", resendTimerReady: "Kode baru bisa dikirim", toastFillNameEmail: "Isi nama & email terlebih dahulu", toastOtpSent: "Kode OTP dikirim ke email (cek spam)", toastOtpFail: "Gagal kirim OTP", toastConnectionFail: "Koneksi gagal, coba lagi", toastEmailLocked: "Email terkunci, klik Ubah untuk mengganti", toastWaitResend: "Tunggu {seconds} detik", toastRegisterSuccess: "Pendaftaran berhasil! Mengalihkan...", toastRegisterFail: "Registrasi gagal, coba lagi", submitProcessing: "Memproses...", helperTextDefault: "Lengkapi data dan verifikasi email untuk mengaktifkan tombol daftar", confirmChangeEmail: "Ubah email akan membatalkan verifikasi OTP saat ini. Lanjutkan?", verifyingOtp: "Memverifikasi..." },
+      en: { stepPersonal: "Identity", stepDetails: "Details", stepConfirm: "Confirm", personalData: "Personal Data", fullName: "Full Name", fullNamePlaceholder: "Ahmad bin Abdullah", emailPlaceholder: "email@example.com", sendOtp: "Send OTP", changeEmail: "Change", otpCode: "Verification Code", phoneNumber: "Phone Number", phonePlaceholder: "08012345678 / 081234567890", area: "Area", areaPlaceholder: "Search neighborhood/city", age: "Age", agePlaceholder: "25", gender: "Gender", male: "Male", female: "Female", participantsTitle: "Participants", adultMale: "Adult Males", adultFemale: "Adult Females", children: "Children (<15)", totalParticipants: "Total Participants", prayerSession: "Select Session", selectSession: "Select session", session1: "Session 1: 07:00 AM", session2: "Session 2: 08:30 AM", transportation: "Transportation", selectTransport: "Select transportation", walking: "Walking", bicycle: "Bicycle", car: "Car", publicTransport: "Public Transport", parkingWarningMsg: "⚠️ The mosque has no parking area. Please use paid parking nearby.", consentText: "I agree to data usage for this event", registerNow: "Register Now", resendOtp: "Resend", errorNameRequired: "Name must be at least 3 characters", errorEmailInvalid: "Invalid email", errorPhoneInvalid: "Phone format: JP (080/090/070) or Indonesia (08xx)", errorAgeRange: "Age must be between 0-120", errorConsent: "Please agree to terms", errorMinParticipant: "At least 1 participant", errorOtpNotVerified: "OTP verification not completed", errorDuplicate: "Data with this email/phone already registered. Contact committee.", errorSessionRequired: "Select prayer session", errorTransportRequired: "Select transportation", otpVerified: "✅ Email verified", otpWrong: "❌ Wrong code, try again", otpAttemptsLeft: "Attempts left: {attempts}", otpMaxAttempts: "Too many attempts. Resend OTP.", resendTimerWait: "Resend in {seconds}s", resendTimerReady: "New code can be sent", toastFillNameEmail: "Fill in name and email first", toastOtpSent: "OTP code sent to email (check spam)", toastOtpFail: "Failed to send OTP", toastConnectionFail: "Connection failed, try again", toastEmailLocked: "Email locked, click Change to modify", toastWaitResend: "Wait {seconds} seconds", toastRegisterSuccess: "Registration successful! Redirecting...", toastRegisterFail: "Registration failed, try again", submitProcessing: "Processing...", helperTextDefault: "Complete data and verify email to enable register", confirmChangeEmail: "Changing email will cancel current OTP verification. Continue?", verifyingOtp: "Verifying..." },
+      ja: { stepPersonal: "個人情報", stepDetails: "詳細", stepConfirm: "確認", personalData: "個人情報", fullName: "氏名", fullNamePlaceholder: "アフマド・ビン・アブドラ", emailPlaceholder: "email@example.com", sendOtp: "OTP送信", changeEmail: "変更", otpCode: "認証コード", phoneNumber: "電話番号", phonePlaceholder: "08012345678 / 081234567890", area: "居住地", areaPlaceholder: "地区/都市を検索", age: "年齢", agePlaceholder: "25", gender: "性別", male: "男性", female: "女性", participantsTitle: "参加者詳細", adultMale: "成人男性", adultFemale: "成人女性", children: "子ども", totalParticipants: "参加者合計", prayerSession: "セッション選択", selectSession: "セッションを選択", session1: "第1部: 07:00", session2: "第2部: 08:30", transportation: "交通手段", selectTransport: "交通手段を選択", walking: "徒歩", bicycle: "自転車", car: "車", publicTransport: "公共交通機関", parkingWarningMsg: "⚠️ モスクに駐車場はありません。近隣の有料駐車場をご利用ください。", consentText: "同意します", registerNow: "今すぐ登録", resendOtp: "再送信", errorNameRequired: "氏名は3文字以上必要です", errorEmailInvalid: "無効なメールアドレス", errorPhoneInvalid: "電話番号形式: 日本 (080/090/070) またはインドネシア (08xx)", errorAgeRange: "年齢は0〜120の間で入力してください", errorConsent: "利用規約に同意してください", errorMinParticipant: "少なくとも1名の参加者が必要です", errorOtpNotVerified: "OTP認証が完了していません", errorDuplicate: "このメール/電話番号は既に登録されています。委員会にお問い合わせください。", errorSessionRequired: "礼拝セッションを選択してください", errorTransportRequired: "交通手段を選択してください", otpVerified: "✅ メール認証完了", otpWrong: "❌ コードが間違っています", otpAttemptsLeft: "試行回数残り: {attempts}", otpMaxAttempts: "試行回数が多すぎます。OTPを再送信してください。", resendTimerWait: "再送信まで {seconds}秒", resendTimerReady: "新しいコードを送信できます", toastFillNameEmail: "名前とメールアドレスを入力してください", toastOtpSent: "OTPコードをメールに送信しました（迷惑メールも確認）", toastOtpFail: "OTP送信に失敗しました", toastConnectionFail: "接続エラー、再試行してください", toastEmailLocked: "メールはロックされています。「変更」をクリック", toastWaitResend: "{seconds}秒お待ちください", toastRegisterSuccess: "登録成功！リダイレクト中...", toastRegisterFail: "登録に失敗しました", submitProcessing: "処理中...", helperTextDefault: "データを入力し、メール認証を完了してください", confirmChangeEmail: "メールを変更すると現在のOTP認証が無効になります。続行しますか？", verifyingOtp: "認証中..." }
+    };
+
+    let currentLang = localStorage.getItem('preferredLang') || (navigator.language.startsWith('ja') ? 'ja' : (navigator.language.startsWith('en') ? 'en' : 'id'));
+    function t(key, params = {}) { let text = translations[currentLang][key] || key; Object.keys(params).forEach(p => { text = text.replace(`{${p}}`, params[p]); }); return text; }
+    function showToast(messageKey, params = {}) { const toast = document.getElementById('toast'), msgSpan = document.getElementById('toastMessage'); msgSpan.textContent = t(messageKey, params); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+    function showLoading() { document.getElementById('loadingOverlay').classList.add('active'); } function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
+    function applyTranslations() { document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); }); document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); }); document.getElementById('submitHelperText').textContent = t('helperTextDefault'); }
+
+    /* ===== API SUPABASE ===== */
+    const SUPABASE_URL = "https://ygxupwycmnkqmyzwrwwg.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlneHVwd3ljbW5rcW15endyd3dnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MDk5NzgsImV4cCI6MjA5MDk4NTk3OH0.Hy4FkrgisW3y-rRFW9bnURYdTvB-vVrCA2ZvpJ-NgCQ";
+    const API_BASE = "https://script.google.com/macros/s/AKfycbyj1Cj_9Lro2bNq405C93PRT-L_9R-8SPLCw__9POIgg7lY4m1_I9SkFbOCK_Umb-ok/exec";
+
+    async function safeFetch(url, options = {}) {
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        const res = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timeout);
+        return await res.json();
+      } catch (err) { showToast('toastConnectionFail'); return { status: 'error' }; }
+    }
+
+    class ApiClient {
+      static async sendOtp(email, nama) { return safeFetch(`${API_BASE}?action=send_otp&email=${encodeURIComponent(email)}&nama=${encodeURIComponent(nama)}`); }
+      static async verifyOtp(token, code, email) { return safeFetch(`${API_BASE}?action=verify_otp&token=${encodeURIComponent(token)}&code=${encodeURIComponent(code)}&email=${encodeURIComponent(email)}`); }
+      static async checkDuplicate(email, phone) { return safeFetch(`${API_BASE}?action=check_duplicate&email=${encodeURIComponent(email)}&no_hp=${encodeURIComponent(phone)}`); }
+      
+      static async register(formData) {
+        // Konversi FormData ke JSON untuk Supabase
+        const data = {};
+        formData.forEach((value, key) => {
+          // Konversi angka agar sesuai tipe data di database
+          if (['usia', 'male_adults', 'female_adults', 'children_count', 'jumlah_orang'].includes(key)) {
+            data[key] = parseInt(value, 10) || 0;
+          } else {
+            data[key] = value;
+          }
+        });
+
+        try {
+          const res = await fetch(`${SUPABASE_URL}/rest/v1/participants`, {
+            method: 'POST',
+            headers: {
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(data)
+          });
+
+          if (res.ok) return { status: 'success' };
+          return { status: 'error' };
+        } catch (err) {
+          return { status: 'error' };
+        }
+      }
+    }
+
+    /* ===== VALIDATION ===== */
+    class Validator {
+      static name(value) { const trimmed = value?.trim(); return trimmed && trimmed.length >= 3; }
+      static email(value) { return /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/.test(value?.trim() || ''); }
+      static phone(value) { const cleaned = value?.replace(/\D/g, '') || ''; const jp = /^(0[789]0\d{8})$/; const id = /^08[0-9]{8,11}$/; const withCountry = /^\+81[789]0\d{8}$/.test(value) || /^\+62[0-9]{9,12}$/.test(value); return jp.test(cleaned) || id.test(cleaned) || withCountry; }
+      static age(value) { const num = parseInt(value, 10); return !isNaN(num) && num >= 0 && num <= 120; }
+      static totalParticipants(male, female, children) { return (male + female + children) > 0; }
+    }
+
+    /* ===== OTP MANAGER ===== */
+    class OTPManager {
+      constructor() { this.token = ''; this.isVerified = false; this.emailLocked = false; this.lockedEmail = ''; this.attempts = 0; this.maxAttempts = 5; this.countdown = 0; this.countdownInterval = null; this.isVerifying = false; }
+      reset(email = null) { this.token = ''; this.isVerified = false; this.emailLocked = false; this.lockedEmail = email || ''; this.attempts = 0; if (this.countdownInterval) clearInterval(this.countdownInterval); this.countdown = 0; this.isVerifying = false; }
+      lockEmail(email) { this.emailLocked = true; this.lockedEmail = email; }
+      unlockEmail() { this.emailLocked = false; this.lockedEmail = ''; this.isVerified = false; this.attempts = 0; this.isVerifying = false; }
+      incrementAttempts() { this.attempts++; return this.attempts >= this.maxAttempts; }
+      startCountdown(seconds, onTick, onComplete) { if (this.countdownInterval) clearInterval(this.countdownInterval); this.countdown = seconds; const update = () => { if (this.countdown <= 0) { clearInterval(this.countdownInterval); this.countdownInterval = null; onComplete(); } else { onTick(this.countdown); this.countdown--; } }; update(); this.countdownInterval = setInterval(update, 1000); }
+      getRemainingSeconds() { return this.countdown; }
+    }
+
+    /* ===== MAIN APP ===== */
+    class App {
+      constructor() {
+        this.otpManager = new OTPManager();
+        this.isDuplicate = false;
+        this.elements = this.cacheElements();
+        this.debouncedDuplicateCheck = this.debounce(this.checkDuplicate, 700);
+        this.debouncedAutoSave = this.debounce(this.saveDraft, 500);
+        this.attachEventListeners();
+        this.loadDraft();
+        this.updateTotal();
+        this.updateSubmitButton();
+        this.applyStoredLanguage();
+        this.elements.emailInput.disabled = false;
+        this.otpManager.reset();
+      }
+      cacheElements() { return { form: document.getElementById('registrationForm'), fullName: document.getElementById('fullName'), emailInput: document.getElementById('emailInput'), sendOtpBtn: document.getElementById('sendOtpBtn'), changeEmailBtn: document.getElementById('changeEmailBtn'), otpSection: document.getElementById('otpSection'), otpDigits: document.querySelectorAll('.otp-digit'), otpFeedback: document.getElementById('otpFeedback'), resendTimer: document.getElementById('resendTimerText'), resendOtpBtn: document.getElementById('resendOtpBtn'), phoneInput: document.getElementById('phoneInput'), maleAdults: document.getElementById('maleAdults'), femaleAdults: document.getElementById('femaleAdults'), childrenCount: document.getElementById('childrenCount'), totalNumber: document.getElementById('totalNumberDisplay'), totalDetail: document.getElementById('totalDetailDisplay'), totalHidden: document.getElementById('totalHidden'), duplicateWarning: document.getElementById('duplicateWarning'), dupMsg: document.getElementById('dupMsg'), submitBtn: document.getElementById('submitBtn'), sessionSelect: document.getElementById('sessionSelect'), transportSelect: document.getElementById('transportSelect'), parkingWarning: document.getElementById('parkingWarning'), consentCheck: document.getElementById('consentCheck'), ageInput: document.getElementById('ageInput'), fullNameError: document.getElementById('fullNameError'), emailError: document.getElementById('emailError'), phoneError: document.getElementById('phoneError'), ageError: document.getElementById('ageError') }; }
+      attachEventListeners() {
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => { currentLang = btn.dataset.lang; localStorage.setItem('preferredLang', currentLang); applyTranslations(); this.updateTotal(); this.updateSubmitButton(); document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }));
+        this.elements.sendOtpBtn.addEventListener('click', () => this.sendOtp()); this.elements.changeEmailBtn.addEventListener('click', () => this.resetEmail()); this.elements.resendOtpBtn.addEventListener('click', () => this.sendOtp(true));
+        this.elements.otpDigits.forEach((box, idx) => { box.addEventListener('input', (e) => this.handleOtpInput(e, idx)); box.addEventListener('keydown', (e) => this.handleOtpKeydown(e, idx)); box.addEventListener('paste', (e) => this.handleOtpPaste(e)); });
+        this.elements.fullName.addEventListener('input', () => { this.validateField('name'); this.debouncedAutoSave(); });
+        this.elements.emailInput.addEventListener('input', () => { if (!this.otpManager.emailLocked) { this.validateField('email'); this.debouncedDuplicateCheck(); this.debouncedAutoSave(); } });
+        this.elements.phoneInput.addEventListener('input', () => { this.validateField('phone'); this.debouncedDuplicateCheck(); this.debouncedAutoSave(); });
+        this.elements.ageInput.addEventListener('input', () => { this.validateField('age'); this.debouncedAutoSave(); });
+        this.elements.maleAdults.addEventListener('input', () => { this.updateTotal(); this.debouncedAutoSave(); }); this.elements.femaleAdults.addEventListener('input', () => { this.updateTotal(); this.debouncedAutoSave(); }); this.elements.childrenCount.addEventListener('input', () => { this.updateTotal(); this.debouncedAutoSave(); });
+        this.elements.sessionSelect.addEventListener('change', () => this.updateSubmitButton()); this.elements.transportSelect.addEventListener('change', () => { this.updateSubmitButton(); this.handleParkingWarning(); }); this.elements.consentCheck.addEventListener('change', () => this.updateSubmitButton());
+        this.elements.form.addEventListener('submit', (e) => this.handleSubmit(e));
+      }
+      validateField(field) { if (field === 'name') { const ok = Validator.name(this.elements.fullName.value); this.showFieldError(this.elements.fullNameError, ok ? '' : t('errorNameRequired')); return ok; } if (field === 'email') { const ok = Validator.email(this.elements.emailInput.value); this.showFieldError(this.elements.emailError, ok ? '' : t('errorEmailInvalid')); return ok; } if (field === 'phone') { const ok = Validator.phone(this.elements.phoneInput.value); this.showFieldError(this.elements.phoneError, ok ? '' : t('errorPhoneInvalid')); return ok; } if (field === 'age') { const ok = Validator.age(this.elements.ageInput.value); this.showFieldError(this.elements.ageError, ok ? '' : t('errorAgeRange')); return ok; } return true; }
+      showFieldError(el, msg) { if (!el) return; if (msg) { el.textContent = msg; el.style.display = 'flex'; } else el.style.display = 'none'; }
+      isFormValid() { return (Validator.name(this.elements.fullName.value) && Validator.email(this.elements.emailInput.value) && Validator.phone(this.elements.phoneInput.value) && Validator.age(this.elements.ageInput.value) && this.getTotal() > 0 && this.otpManager.isVerified && !this.isDuplicate && this.elements.sessionSelect.value && this.elements.transportSelect.value && this.elements.consentCheck.checked); }
+      updateSubmitButton() { this.elements.submitBtn.disabled = !this.isFormValid(); }
+      async sendOtp(isResend = false) {
+        const email = this.elements.emailInput.value.trim(), name = this.elements.fullName.value.trim();
+        if (!Validator.name(name) || !Validator.email(email)) { showToast('toastFillNameEmail'); return; }
+        if (this.otpManager.emailLocked && !isResend) { showToast('toastEmailLocked'); return; }
+        if (this.otpManager.getRemainingSeconds() > 0 && isResend) { showToast('toastWaitResend', { seconds: this.otpManager.getRemainingSeconds() }); return; }
+        const btn = this.elements.sendOtpBtn, original = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<span class="btn-spinner"></span> ${t('submitProcessing')}`;
+        try { const result = await ApiClient.sendOtp(email, name); if (result.status === 'success') { this.otpManager.reset(email); this.otpManager.lockEmail(email); this.otpManager.token = result.token || ''; this.elements.emailInput.disabled = true; this.elements.sendOtpBtn.style.display = 'none'; this.elements.changeEmailBtn.style.display = 'inline-flex'; this.elements.otpSection.style.display = 'block'; this.clearOtpInputs(); this.elements.otpFeedback.style.display = 'none'; this.otpManager.startCountdown(60, (sec) => { this.elements.resendTimer.textContent = t('resendTimerWait', { seconds: sec }); }, () => { this.elements.resendTimer.textContent = t('resendTimerReady'); this.elements.resendOtpBtn.disabled = false; }); showToast('toastOtpSent'); } else showToast('toastOtpFail'); } catch (err) { showToast('toastConnectionFail'); } finally { btn.disabled = false; btn.innerHTML = original; }
+      }
+      async verifyOtp(code) {
+        if (this.otpManager.isVerified || this.otpManager.isVerifying) return;
+        if (this.otpManager.attempts >= this.otpManager.maxAttempts) { this.elements.otpFeedback.textContent = t('otpMaxAttempts'); this.elements.otpFeedback.style.display = 'flex'; this.elements.otpDigits.forEach(inp => inp.disabled = true); return; }
+        this.otpManager.isVerifying = true; this.elements.otpFeedback.textContent = t('verifyingOtp'); this.elements.otpFeedback.style.display = 'flex'; this.elements.otpDigits.forEach(inp => inp.disabled = true);
+        try { const res = await ApiClient.verifyOtp(this.otpManager.token, code, this.elements.emailInput.value); if (res.status === 'success') { this.otpManager.isVerified = true; document.getElementById('otpContainer').classList.add('otp-verified'); this.elements.otpFeedback.textContent = t('otpVerified'); this.elements.otpFeedback.style.display = 'flex'; this.updateSubmitButton(); this.updateStepIndicator(); this.checkDuplicate(); } else { const maxReached = this.otpManager.incrementAttempts(); this.elements.otpFeedback.textContent = maxReached ? t('otpMaxAttempts') : t('otpWrong'); if (maxReached) this.elements.otpDigits.forEach(inp => inp.disabled = true); else { const left = this.otpManager.maxAttempts - this.otpManager.attempts; this.elements.otpFeedback.textContent = t('otpAttemptsLeft', { attempts: left }); this.elements.otpDigits.forEach(inp => inp.disabled = false); } this.elements.otpFeedback.style.display = 'flex'; } } catch (err) { showToast('toastConnectionFail'); } finally { this.otpManager.isVerifying = false; if (!this.otpManager.isVerified && this.otpManager.attempts < this.otpManager.maxAttempts) this.elements.otpDigits.forEach(inp => inp.disabled = false); }
+      }
+      handleOtpInput(e, idx) { e.target.value = e.target.value.replace(/\D/g, ''); const inputs = this.elements.otpDigits; if (e.target.value && idx < inputs.length - 1) inputs[idx + 1].focus(); const code = Array.from(inputs).map(i => i.value).join(''); if (code.length === 4) this.verifyOtp(code); }
+      handleOtpKeydown(e, idx) { if (e.key === 'Backspace' && !e.target.value && idx > 0) this.elements.otpDigits[idx - 1].focus(); }
+      handleOtpPaste(e) { e.preventDefault(); const paste = (e.clipboardData || window.clipboardData).getData('text'); const digits = paste.replace(/\D/g, '').slice(0, 4); const inputs = this.elements.otpDigits; for (let i = 0; i < digits.length && i < inputs.length; i++) inputs[i].value = digits[i]; if (digits.length === 4) this.verifyOtp(digits); else if (digits.length > 0) inputs[digits.length].focus(); }
+      clearOtpInputs() { this.elements.otpDigits.forEach(inp => { inp.value = ''; inp.disabled = false; }); document.getElementById('otpContainer').classList.remove('otp-verified'); }
+      resetEmail() { if (this.otpManager.emailLocked && confirm(t('confirmChangeEmail'))) { this.elements.emailInput.disabled = false; this.otpManager.unlockEmail(); this.elements.otpSection.style.display = 'none'; this.elements.sendOtpBtn.style.display = 'inline-flex'; this.elements.changeEmailBtn.style.display = 'none'; this.clearOtpInputs(); if (this.otpManager.countdownInterval) clearInterval(this.otpManager.countdownInterval); this.elements.resendTimer.textContent = ''; this.elements.resendOtpBtn.disabled = true; this.elements.otpFeedback.style.display = 'none'; this.updateSubmitButton(); this.updateStepIndicator(); } }
+      async checkDuplicate() { const email = this.elements.emailInput.value.trim(), phone = this.elements.phoneInput.value.trim(); if (!email || !phone) return; try { const res = await ApiClient.checkDuplicate(email, phone); this.isDuplicate = !!res.isDuplicate; if (this.isDuplicate) { this.elements.duplicateWarning.style.display = 'flex'; this.elements.dupMsg.textContent = t('errorDuplicate'); } else this.elements.duplicateWarning.style.display = 'none'; this.updateSubmitButton(); } catch (err) { console.error(err); } }
+      getTotal() { return (parseInt(this.elements.maleAdults.value)||0) + (parseInt(this.elements.femaleAdults.value)||0) + (parseInt(this.elements.childrenCount.value)||0); }
+      updateTotal() { const total = this.getTotal(); this.elements.totalHidden.value = total; this.elements.totalNumber.textContent = total; const male = parseInt(this.elements.maleAdults.value)||0, female = parseInt(this.elements.femaleAdults.value)||0, child = parseInt(this.elements.childrenCount.value)||0; if (currentLang === 'id') this.elements.totalDetail.textContent = `${male+female} dewasa, ${child} anak`; else if (currentLang === 'en') this.elements.totalDetail.textContent = `${male+female} ${male+female===1?'adult':'adults'}, ${child} ${child===1?'child':'children'}`; else this.elements.totalDetail.textContent = `大人 ${male+female} 名, 子供 ${child} 名`; this.updateSubmitButton(); this.updateStepIndicator(); }
+      handleParkingWarning() { this.elements.parkingWarning.style.display = this.elements.transportSelect.value === 'Mobil' ? 'flex' : 'none'; }
+      updateStepIndicator() { const step1 = document.querySelector('[data-step="1"]'), step2 = document.querySelector('[data-step="2"]'), step3 = document.querySelector('[data-step="3"]'); if (this.otpManager.isVerified) { step1.classList.add('completed'); step1.classList.remove('active'); } else { step1.classList.add('active'); step1.classList.remove('completed'); } if (this.otpManager.isVerified && this.getTotal() > 0) { step2.classList.add('completed'); step2.classList.remove('active'); } else if (this.otpManager.isVerified) { step2.classList.add('active'); step2.classList.remove('completed'); } else step2.classList.remove('active', 'completed'); if (this.otpManager.isVerified && this.getTotal() > 0) step3.classList.add('active'); else step3.classList.remove('active'); }
+      saveDraft() { const draft = { fullName: this.elements.fullName.value.trim(), email: this.elements.emailInput.value.trim(), phone: this.elements.phoneInput.value.trim(), domisili: document.getElementById('domisiliInput').value.trim(), usia: this.elements.ageInput.value, male: this.elements.maleAdults.value, female: this.elements.femaleAdults.value, children: this.elements.childrenCount.value, gender: document.querySelector('input[name="jk"]:checked')?.value || '', session: this.elements.sessionSelect.value, transport: this.elements.transportSelect.value }; localStorage.setItem('eid_form_draft', JSON.stringify({ data: draft, savedAt: Date.now() })); }
+      loadDraft() { const raw = localStorage.getItem('eid_form_draft'); if (raw) try { const parsed = JSON.parse(raw); if (Date.now() - parsed.savedAt > 86400000) localStorage.removeItem('eid_form_draft'); else { const d = parsed.data; this.elements.fullName.value = d.fullName || ''; this.elements.emailInput.value = d.email || ''; this.elements.phoneInput.value = d.phone || ''; document.getElementById('domisiliInput').value = d.domisili || ''; this.elements.ageInput.value = d.usia || ''; this.elements.maleAdults.value = d.male || 0; this.elements.femaleAdults.value = d.female || 0; this.elements.childrenCount.value = d.children || 0; if (d.gender === 'Laki-laki') document.getElementById('genderMale').checked = true; else if (d.gender === 'Perempuan') document.getElementById('genderFemale').checked = true; if (d.session) this.elements.sessionSelect.value = d.session; if (d.transport) { this.elements.transportSelect.value = d.transport; this.handleParkingWarning(); } this.updateTotal(); } } catch(e) {} }
+      async handleSubmit(e) { e.preventDefault(); if (!this.isFormValid()) { if (!Validator.age(this.elements.ageInput.value)) this.showFieldError(this.elements.ageError, t('errorAgeRange')); if (!this.elements.sessionSelect.value) showToast('errorSessionRequired'); if (!this.elements.transportSelect.value) showToast('errorTransportRequired'); if (this.getTotal() === 0) showToast('errorMinParticipant'); return; } const originalHTML = this.elements.submitBtn.innerHTML; this.elements.submitBtn.disabled = true; this.elements.submitBtn.innerHTML = `<span class="btn-spinner"></span> ${t('submitProcessing')}`; const fd = new FormData(this.elements.form); fd.set('nama_lengkap', this.elements.fullName.value.trim()); fd.set('domisili', document.getElementById('domisiliInput').value.trim()); fd.append('action', 'register'); fd.append('id', `EID-${crypto.randomUUID ? crypto.randomUUID().slice(0,8) : Math.random().toString(36).substring(2,10)}`); fd.append('otp_token', this.otpManager.token); fd.set('jumlah_orang', this.getTotal().toString()); try { const result = await ApiClient.register(fd); if (result.status === 'success') { showToast('toastRegisterSuccess'); localStorage.removeItem('eid_form_draft'); setTimeout(() => window.location.href = `success.html?${new URLSearchParams(fd).toString()}`, 1500); } else { showToast('toastRegisterFail'); this.elements.submitBtn.disabled = false; this.elements.submitBtn.innerHTML = originalHTML; } } catch (err) { showToast('toastConnectionFail'); this.elements.submitBtn.disabled = false; this.elements.submitBtn.innerHTML = originalHTML; } }
+      debounce(func, delay) { let timer; return (...args) => { clearTimeout(timer); timer = setTimeout(() => func.apply(this, args), delay); }; }
+      applyStoredLanguage() { const btn = document.querySelector(`.lang-btn[data-lang="${currentLang}"]`); if (btn) btn.classList.add('active'); applyTranslations(); }
+    }
+    document.addEventListener('DOMContentLoaded', () => { window.app = new App(); });
+  </script>
+</body>
+</html>
